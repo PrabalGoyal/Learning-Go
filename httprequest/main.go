@@ -9,20 +9,20 @@ import (
 )
 
 type IDService interface {
-	GenerateID() (*UUID4, error)
-	GenerateBulkID(count uint) (*[]UUID4, error)
+	GenerateID() (*ID, error)
+	GenerateBulkID(count uint) (*[]ID, error)
 }
 
 type (
+	ID           string
 	UUID4Service struct{}
-	UUID4        string
 )
 
 func NewUUID4Service() IDService {
 	return &UUID4Service{}
 }
 
-func (u UUID4Service) GenerateBulkID(count uint) (*[]UUID4, error) {
+func (u UUID4Service) GenerateBulkID(count uint) (*[]ID, error) {
 	url := fmt.Sprintf("https://www.uuidtools.com/api/generate/v4/count/%d", count)
 	method := "GET"
 
@@ -41,7 +41,7 @@ func (u UUID4Service) GenerateBulkID(count uint) (*[]UUID4, error) {
 	if err != nil {
 		return nil, err
 	}
-	var uuids []UUID4
+	var uuids []ID
 	err = json.Unmarshal(body, &uuids)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (u UUID4Service) GenerateBulkID(count uint) (*[]UUID4, error) {
 	return &uuids, nil
 }
 
-func (u UUID4Service) GenerateID() (*UUID4, error) {
+func (u UUID4Service) GenerateID() (*ID, error) {
 	uuid4s, err := u.GenerateBulkID(1)
 	if err != nil {
 		return nil, err
